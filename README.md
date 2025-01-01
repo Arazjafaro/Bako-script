@@ -1,0 +1,2 @@
+# Bako-script
+Hehe
