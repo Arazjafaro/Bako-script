@@ -1,0 +1,167 @@
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+local Window = Rayfield:CreateWindow({
+   Name = "Rayfield Example Window",
+   Icon = 0, -- Icon in Topbar. Can use Lucide Icons (string) or Roblox Image (number). 0 to use no icon (default).
+   LoadingTitle = "Rayfield Interface Suite",
+   LoadingSubtitle = "by Sirius",
+   Theme = "Default", -- Check https://docs.sirius.menu/rayfield/configuration/themes
+
+   DisableRayfieldPrompts = false,
+   DisableBuildWarnings = false, -- Prevents Rayfield from warning when the script has a version mismatch with the interface
+
+   ConfigurationSaving = {
+      Enabled = true,
+      FolderName = nil, -- Create a custom folder for your hub/game
+      FileName = "Big Hub"
+   },
+
+   Discord = {
+      Enabled = false, -- Prompt the user to join your Discord server if their executor supports it
+      Invite = "noinvitelink", -- The Discord invite code, do not include discord.gg/. E.g. discord.gg/ ABCD would be ABCD
+      RememberJoins = true -- Set this to false to make them join the discord every time they load it up
+   },
+
+   KeySystem = true, -- Set this to true to use our key system
+   KeySettings = {
+      Title = "Untitled",
+      Subtitle = "Key System",
+      Note = "Please enter the key to proceed.", -- Inform the user about the key
+      FileName = "Key", -- The name of the file that will store the key
+      SaveKey = true, -- If true, the entered key will be saved
+      GrabKeyFromSite = false, -- If true, the script will try to grab the key from a given URL
+      Key = {"snakehub"} -- List of valid keys; only the keys here will be accepted
+   }
+})
+
+local Tab = Window:CreateTab("CustomItems", 4483362458) -- Title, Image
+local Section = Tab:CreateSection("Snakeitem")
+Section:Set("legitcustomitems")
+local Divider = Tab:CreateDivider()
+Divider:Set(false) -- Whether the divider's visibility is to be set to true or false.
+Rayfield:Notify({
+   Title = "u logged in!",
+   Content = "welcome back!",
+   Duration = 6.5,
+   Image = 4483362458,
+})
+
+-- Button to close or equip the tool
+local closeButton = Tab:CreateButton({
+   Name = "closed X_x",
+   Callback = function()
+      -- Close the tool or perform another action here
+      print("Tool closed or action triggered.")
+      -- You can add the logic to hide the tool or reset the UI
+   end,
+})
+
+-- Tool Logic (Equipping and Animation Setup)
+local Tool = game.Players.LocalPlayer.Backpack:WaitForChild("Tool")  -- Make sure the tool is in the player's backpack
+
+local AnimationsFolder = Tool:WaitForChild("Animations")
+local Hold = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(AnimationsFolder.idle)
+
+local mouse = game.Players.LocalPlayer:GetMouse()
+local uis = game:GetService("UserInputService")
+
+local Player = game.Players.LocalPlayer
+local Humanoid = Player.Character:WaitForChild("Humanoid")
+
+local Equipped = false
+
+uis.InputBegan:Connect(function(i,a)
+   if i.KeyCode == Enum.KeyCode.Q then
+      if mouse.Target.Parent.ClassName == "Model" then
+         local target = mouse.Target
+
+         -- Target Effects
+         local highlight = Instance.new("Highlight")
+         highlight.FillTransparency = 1
+         highlight.OutlineTransparency = 1
+         highlight.Parent = target.Parent
+         highlight.FillColor = Color3.new(1, 0.321569, 0.333333)
+
+         target.Anchored = true
+
+         local sound = Instance.new("Sound", game.Workspace)
+         sound.SoundId = "rbxassetid://6555668806"
+         sound:Play()
+
+         local light = Instance.new("PointLight", target)
+         light.Brightness = 10
+         light.Color = Color3.new(1, 0.458824, 0.466667)
+         light.Range = 0
+         local particle = Instance.new("ParticleEmitter", target)
+         particle.Size =  NumberSequence.new(4, 4)
+         particle.Speed = NumberRange.new(0,0)
+         particle.Rate = 0
+         particle.Texture = "http://www.roblox.com/asset/?id=74062787660956"
+         particle.Lifetime = NumberRange.new(0.02,0.02)
+         
+         -- Particle Growth
+         for i = 1,50 do
+            wait()
+            particle.Rate += 5
+         end
+         
+         -- Explosion and Entity Manipulation Logic
+         local sound2 = Instance.new("Sound", target)
+         sound2.SoundId = "rbxassetid://8663054927"
+         sound2.Looped = true
+         sound2:Play()
+
+         for i = 1,100 do
+            wait()
+            light.Range += 0.1
+            sound2.PlaybackSpeed += 0.1
+            target.CFrame = target.CFrame * CFrame.fromEulerAnglesXYZ(0, 0.1, 0)
+         end
+         sound2:Stop()
+
+         -- Destroy Target (Explosion)
+         local explode = Instance.new("Explosion", game.Workspace)
+         explode.Position = target.Position
+         local sound = Instance.new("Sound", target)
+         sound.SoundId = "rbxassetid://5564340326"
+         sound:Play()
+         local part = Instance.new("Part", game.Workspace)
+         part.Transparency = 1
+         part.CFrame = target.CFrame
+
+         particle.Enabled = false
+         light:Destroy()
+         highlight:Destroy()
+
+         -- Clean up entity
+         target.Parent:Destroy()
+      end
+   end
+end)
+
+local AnimationsFolder = Tool:WaitForChild("Animations")
+
+AnimationsFolder.idle.AnimationId = "rbxassetid://10479585177"
+AnimationsFolder.shake.AnimationId = "rbxassetid://12001275923"
+
+local Hold = Humanoid:LoadAnimation(AnimationsFolder.idle)
+local Shake = Humanoid:LoadAnimation(AnimationsFolder.shake)
+
+Tool.Equipped:Connect(function()
+   Equipped = true
+   Hold:Play()
+end)
+
+Tool.Unequipped:Connect(function()
+   Equipped = false
+   Hold:Stop()
+end)
+
+-- Example of another button
+local chillSeekButton = Tab:CreateButton({
+   Name = "chillseek",
+   Callback = function()
+      loadstring(game:HttpGet("https://raw.githubusercontent.com/Idk-lol2/chill-seek/refs/heads/main/chillseklal.Pl.txt"))()
+   end,
+})
+
+-- Add additional buttons similarly...
